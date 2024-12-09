@@ -2,14 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package StudentManagerApp;
+package StudentManagerApp2;
 
 /**
  *
- * @author Admin
+ * @author Minh Hang
  */
 public class Student {
-     int id;
+    int id;
     String name;
     double marks;
 
@@ -20,7 +20,7 @@ public class Student {
     }
 
     public String getRank() {
-        if (marks < 5.0) return "Fail";
+        if (marks < 5.0) return "Failing";
         if (marks < 6.5) return "Medium";
         if (marks < 7.5) return "Good";
         if (marks < 9.0) return "Very Good";
@@ -30,6 +30,5 @@ public class Student {
     @Override
     public String toString() {
         return "ID: " + id + ", Name: " + name + ", Marks: " + marks + ", Rank: " + getRank();
-    
     }
 }

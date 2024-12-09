@@ -2,23 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package StudentManagerApp;
+package StudentManagerApp2;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+  import java.util.Scanner;
 
-/**
- *
- * @author Admin
- */
 public class StudentManager {
-     public static void main(String[] args) {
-        MyStack myStack = new MyStack();
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        MyArrayList myArrayList = new MyArrayList();
 
-        // Main menu loop
         while (true) {
             System.out.println("\nChoose an action:");
             System.out.println("1. Add Student");
@@ -26,92 +20,186 @@ public class StudentManager {
             System.out.println("3. Delete Student");
             System.out.println("4. Display All Students");
             System.out.println("5. Sort Students by Marks");
-            System.out.println("6. Search for Student by ID");
-            System.out.println("7. Pop Last Deleted Student");
-            System.out.println("8. Exit");
+            System.out.println("6. Sort Students by Name"); // Thêm tùy chọn sắp xếp theo tên
+            System.out.println("7. Search for Student by ID");
+            System.out.println("8. Pop Last Deleted Student");
+            System.out.println("9. Exit");
             System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();  // Consume newline
+             
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Đọc bỏ dòng còn lại sau khi nhập số
 
-            switch (choice) {
-                case 1:
-                    // Add Student
-                    System.out.print("Enter student ID: ");
-                    int id = scanner.nextInt();
-                    scanner.nextLine();  // Consume newline
-                    System.out.print("Enter student name: ");
-                    String name = scanner.nextLine();
-                    System.out.print("Enter student marks: ");
-                    double marks = scanner.nextDouble();
-                    scanner.nextLine();  // Consume newline
+                switch (choice) {
+                    case 1: // Thêm sinh viên
+                        int id = 0;
+                        while (true) {
+                            try {
+                                System.out.print("Enter Student ID: ");
+                                id = scanner.nextInt();
+                                scanner.nextLine(); // Đọc bỏ dòng còn lại
+                                break; // Nếu nhập đúng, thoát khỏi vòng lặp
+                            } catch (InputMismatchException e) {
+                                System.out.println("Invalid input! Please enter a valid ID.");
+                                scanner.nextLine(); // Đọc bỏ dòng lỗi
+                            }
+                        }
 
+                        String name = "";
+                        while (true) {
+                            try {
+                                System.out.print("Enter Student Name: ");
+                                name = scanner.nextLine();
+                                if (!name.matches("[a-zA-Z ]+")) { // Kiểm tra tên có phải là chữ cái
+                                    throw new IllegalArgumentException("Name must contain only letters and spaces.");
+                                }
+                                break; // Nếu tên hợp lệ, thoát khỏi vòng lặp
+                            } catch (IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
+                        }
 
-            myStack.addStudent(new Student(id, name, marks));
-                    break;
+                        double marks = 0;
+                        while (true) {
+                            try {
+                                System.out.print("Enter Student Marks: ");
+                                marks = scanner.nextDouble();
+                                scanner.nextLine(); // Đọc bỏ dòng còn lại
+                                if (marks < 0 || marks > 10) {
+                                    throw new IllegalArgumentException("Marks must be between 0 and 10.");
+                                }
+                                break; // Nếu điểm hợp lệ, thoát khỏi vòng lặp
+                            } catch (InputMismatchException e) {
+                                System.out.println("Invalid input! Please enter a valid mark.");
+                                scanner.nextLine(); // Đọc bỏ dòng lỗi
+                            } catch (IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
+                        }
 
-                case 2:
-                    // Edit Student
-                    System.out.print("Enter student ID to edit: ");
-                    int editId = scanner.nextInt();
-                    scanner.nextLine();  // Consume newline
-                    System.out.print("Enter new name: ");
-                    String newName = scanner.nextLine();
-                    System.out.print("Enter new marks: ");
-                    double newMarks = scanner.nextDouble();
-                    scanner.nextLine();  // Consume newline
+                        myArrayList.addStudent(new Student(id, name, marks));
+                        break;
 
-                    myStack.editStudent(editId, newName, newMarks);
-                    break;
+                    case 2: // Chỉnh sửa sinh viên
+                        int editId = 0;
+                        while (true) {
+                            try {
+                                System.out.print("Enter Student ID to edit: ");
+                                editId = scanner.nextInt();
+                                scanner.nextLine();
+                                break; // Nếu nhập đúng ID, thoát khỏi vòng lặp
+                            } catch (InputMismatchException e) {
+                                System.out.println("Invalid input! Please enter a valid ID.");
+                                scanner.nextLine(); // Đọc bỏ dòng lỗi
+                            }
+                        }
 
-                case 3:
-                    // Delete Student
-                    System.out.print("Enter student ID to delete: ");
-                    int deleteId = scanner.nextInt();
-                    scanner.nextLine();  // Consume newline
+                        String newName = "";
+                        while (true) {
+                            try {
+                                System.out.print("Enter new name: ");
+                                newName = scanner.nextLine();
+                                if (!newName.matches("[a-zA-Z ]+")) { // Kiểm tra tên hợp lệ
+                                    throw new IllegalArgumentException("Name must contain only letters and spaces.");
+                                }
+                                break; // Nếu tên hợp lệ, thoát khỏi vòng lặp
+                            } catch (IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
+                        }
 
-                    myStack.deleteStudent(deleteId);
-                    break;
+                        double newMarks = 0;
+                        while (true) {
+                            try {
+                                System.out.print("Enter new marks: ");
+                                newMarks = scanner.nextDouble();
+                                scanner.nextLine(); // Đọc bỏ dòng còn lại
+                                if (newMarks < 0 || newMarks > 10) {
+                                    throw new IllegalArgumentException("Marks must be between 0 and 10.");
+                                }
+                                break; // Nếu điểm hợp lệ, thoát khỏi vòng lặp
+                            } catch (InputMismatchException e) {
+                                System.out.println("Invalid input! Please enter a valid mark.");
+                                scanner.nextLine(); // Đọc bỏ dòng lỗi
+                            } catch (IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
+                        }
 
-                case 4:
-                    // Display All Students
-                    myStack.displayStudents();
-                    break;
+                        myArrayList.editStudent(editId, newName, newMarks);
+                        break;
 
-                case 5:
-                    // Sort Students by Marks
-                    myStack.sortStudents();
-                    myStack.displayStudents();
-                    break;
+                    case 3: // Xóa sinh viên
+                        int deleteId = 0;
+                        while (true) {
+                            try {
+                                System.out.print("Enter Student ID to delete: ");
+                                deleteId = scanner.nextInt();
+                                scanner.nextLine();
+                                break; // Nếu nhập đúng ID, thoát khỏi vòng lặp
+                            } catch (InputMismatchException e) {
+                                System.out.println("Invalid input! Please enter a valid ID.");
+                                scanner.nextLine(); // Đọc bỏ dòng lỗi
+                            }
+                        }
 
-                case 6:
-                    // Search for Student by ID
-                    System.out.print("Enter student ID to search: ");
-                    int searchId = scanner.nextInt();
-                    scanner.nextLine();  // Consume newline
+                        myArrayList.deleteStudent(deleteId);
+                        break;
 
-                    Student foundStudent = myStack.searchStudent(searchId);
-                    if (foundStudent != null) {
-                        System.out.println("Found Student: " + foundStudent);
-                    }
-                    break;
+                    case 4: // Hiển thị tất cả sinh viên
+                        myArrayList.displayStudents();
+                        break;
 
-                case 7:
-                    // Pop Last Deleted Student
-                    Student poppedStudent = myStack.popDeletedStudent();
-                    if (poppedStudent != null) {
-                        System.out.println("Popped Deleted Student: " + poppedStudent);
-                    }
-                    break;
+                    case 5: // Sắp xếp theo điểm
+                        myArrayList.bubbleSortByMarks();
+                        System.out.println("Sorted Students by Marks:");
+                        myArrayList.displayStudents();
+                        break;
 
-                case 8:
-                    // Exit
-                    System.out.println("Exiting the program.");
-                    scanner.close();
-                    return;
+                    case 6: // Sắp xếp theo tên
+                        myArrayList.bubbleSortByName();
+                        System.out.println("Sorted Students by Name:");
+                        myArrayList.displayStudents();
+                        break;
 
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-                    break;
+                    case 7: // Tìm kiếm theo ID
+                        int searchId = 0;
+                        while (true) {
+                            try {
+                                System.out.print("Enter Student ID to search: ");
+                                searchId = scanner.nextInt();
+                                scanner.nextLine();
+                                break; // Nếu nhập đúng ID, thoát khỏi vòng lặp
+                            } catch (InputMismatchException e) {
+                                System.out.println("Invalid input! Please enter a valid ID.");
+                                scanner.nextLine(); // Đọc bỏ dòng lỗi
+                            }
+                        }
+
+                        Student foundStudent = myArrayList.searchStudent(searchId);
+                        if (foundStudent != null) {
+                            System.out.println("Found student: " + foundStudent);
+                        }
+                        break;
+
+                    case 8: // Khôi phục sinh viên bị xóa
+                        Student restoredStudent = myArrayList.popDeletedStudent();
+                        if (restoredStudent != null) {
+                            System.out.println("Restored student: " + restoredStudent);
+                        }
+                        break;
+
+                    case 9: // Thoát
+                        System.out.println("Exiting program...");
+                        scanner.close();
+                        return;
+
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid choice! Please enter a number between 1 and 9.");
+                scanner.nextLine(); // Đọc bỏ dòng lỗi
             }
         }
     }
